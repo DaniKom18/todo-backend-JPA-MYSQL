@@ -1,8 +1,12 @@
 package com.student.todolist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,8 +17,9 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
     @Column(name = "name")
     private String name;
@@ -29,4 +34,11 @@ public class Item {
     @Column(name = "date_completed")
     private Date dateCompleted;
 
+    public Item(String description, Category category) {
+        this.description = description;
+        this.category = category;
+    }
+
+    public Item() {
+    }
 }

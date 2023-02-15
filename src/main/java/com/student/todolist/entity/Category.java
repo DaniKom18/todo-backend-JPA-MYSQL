@@ -22,6 +22,9 @@ public class Category {
     private String name;
     @Column(name = "icon")
     private String icon;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Item> items;
+
+    public Category() {
+    }
 }
