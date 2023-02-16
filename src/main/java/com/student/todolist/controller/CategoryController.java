@@ -53,7 +53,7 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/{id}/items")
-    public ResponseEntity<Category> postCategoryItem(@PathVariable("id") Long id, @RequestBody Item item){
+    public ResponseEntity<Category> createCategoryItem(@PathVariable("id") Long id, @RequestBody Item item){
         Optional<Category> optCategory = categoryRepository.findById(id);
 
         if (optCategory.isEmpty()){
@@ -63,6 +63,28 @@ public class CategoryController {
         System.out.println(item);
         Category category = optCategory.get();
         itemRepository.save(new Item(item.getDescription(), category));
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/categories/{id}/items")
+    public ResponseEntity<Category> updateCategoryItem(@PathVariable("id") Long id, @RequestBody Item item){
+
+        Optional<Category> optCategory = categoryRepository.findById(id);
+        Optional<Item> oldItem = itemRepository.findById(item.getId());
+
+        if (optCategory.isEmpty() || oldItem.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Category category = optCategory.get();
+        Item updatedItem = oldItem.get();
+
+        //Update old Item
+        updatedItem.updateInboxItem(item.getName(), category, item.getDateDue());
+
+        //Save updated item in database
+        itemRepository.save(updatedItem);
+
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 }
