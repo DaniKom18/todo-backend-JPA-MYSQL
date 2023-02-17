@@ -60,7 +60,6 @@ public class CategoryController {
          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        System.out.println(item);
         Category category = optCategory.get();
         itemRepository.save(new Item(item.getDescription(), category));
         return new ResponseEntity<>(category, HttpStatus.CREATED);
@@ -80,7 +79,21 @@ public class CategoryController {
         Item updatedItem = oldItem.get();
 
         //Update old Item
-        updatedItem.updateInboxItem(item.getName(), category, item.getDateDue());
+        updatedItem.setCategory(category);
+
+        if (item.getName() != null){
+            updatedItem.setName(item.getName());
+        }
+        if (item.getDescription() != null){
+            updatedItem.setDescription(item.getDescription());
+        }
+        if (item.getDateDue() != null){
+            updatedItem.setDateDue(item.getDateDue());
+        }
+        if (item.getDateCompleted() != null){
+            updatedItem.setDateCompleted(item.getDateCompleted());
+            updatedItem.setCompleted(true);
+        }
 
         //Save updated item in database
         itemRepository.save(updatedItem);

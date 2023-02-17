@@ -42,10 +42,4 @@ public class Item {
 
     public Item() {
     }
-
-    public void updateInboxItem(String name, Category category, Date dateDue) {
-        this.name = name;
-        this.category = category;
-        this.dateDue = dateDue;
-    }
 }
