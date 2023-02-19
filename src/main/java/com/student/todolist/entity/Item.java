@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -21,12 +18,10 @@ public class Item {
     @JoinColumn(name = "category_id")
     @JsonIgnore
     private Category category;
-    @Column(name = "name")
-    private String name;
+    @Column(name = "title")
+    private String title;
     @Column(name = "description")
     private String description;
-    @Column(name = "completed")
-    private boolean completed;
     @Column(name = "date_created")
     private Date dateCreated;
     @Column(name = "date_due")

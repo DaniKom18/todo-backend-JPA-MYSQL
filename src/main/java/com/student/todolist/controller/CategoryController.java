@@ -10,10 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -44,12 +42,17 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/{id}/items")
-    public ResponseEntity<Set<Item>> getCategoryItems(@PathVariable("id") Long id){
+    public ResponseEntity<List<Item>> getCategoryItems(@PathVariable("id") Long id){
         Optional<Category> optCategory = categoryRepository.findById(id);
 
         Category category = optCategory.get();
 
-        return new ResponseEntity<>(category.getItems(), HttpStatus.CREATED);
+        //Frontend displays Items in ascending order
+        List<Item> itemsSortedById = category.getItems().stream()
+                .sorted(Comparator.comparingLong(Item::getId))
+                .toList();
+
+        return new ResponseEntity<>(itemsSortedById, HttpStatus.CREATED);
     }
 
     @PostMapping("/categories/{id}/items")
@@ -81,8 +84,8 @@ public class CategoryController {
         //Update old Item
         updatedItem.setCategory(category);
 
-        if (item.getName() != null){
-            updatedItem.setName(item.getName());
+        if (item.getTitle() != null){
+            updatedItem.setTitle(item.getTitle());
         }
         if (item.getDescription() != null){
             updatedItem.setDescription(item.getDescription());
@@ -92,7 +95,6 @@ public class CategoryController {
         }
         if (item.getDateCompleted() != null){
             updatedItem.setDateCompleted(item.getDateCompleted());
-            updatedItem.setCompleted(true);
         }
 
         //Save updated item in database
