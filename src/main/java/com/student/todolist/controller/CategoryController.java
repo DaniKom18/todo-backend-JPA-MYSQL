@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -101,5 +100,21 @@ public class CategoryController {
         itemRepository.save(updatedItem);
 
         return new ResponseEntity<>(category, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/categories/{id}/items")
+    public ResponseEntity<List<Item>> deleteItemsFromCategory(@PathVariable("id") Long id){
+
+        Optional<Category> optCategory = categoryRepository.findById(id);
+
+        if (optCategory.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Category category = optCategory.get();
+
+        List<Item> items = itemRepository.findAllByCategoryId(category.getId());
+
+        itemRepository.deleteAll(items);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }
