@@ -33,7 +33,7 @@ public class CategoryController {
         List<CategoryInfo> categoryInfos = new ArrayList<>();
 
         for (Category category: categories) {
-            CategoryInfo categoryInfo = new CategoryInfo(category.getId(), category.getName(), category.getIcon());
+            CategoryInfo categoryInfo = new CategoryInfo(category.getId(), category.getName(), category.getIcon(), category.getItems().size());
             categoryInfos.add(categoryInfo);
         }
 
