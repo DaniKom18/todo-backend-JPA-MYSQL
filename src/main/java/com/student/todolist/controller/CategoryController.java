@@ -44,14 +44,25 @@ public class CategoryController {
     public ResponseEntity<List<Item>> getCategoryItems(@PathVariable("id") Long id){
         Optional<Category> optCategory = categoryRepository.findById(id);
 
+        if (optCategory.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         Category category = optCategory.get();
+        List<Item> items = category.getItems().stream().toList();
 
-        //Frontend displays Items in ascending order
-        List<Item> itemsSortedById = category.getItems().stream()
-                .sorted(Comparator.comparingLong(Item::getId))
-                .toList();
 
-        return new ResponseEntity<>(itemsSortedById, HttpStatus.CREATED);
+        //sort items
+        if (category.getName().equals("Completed")){
+            //sorted by completed date
+            items = items.stream().filter(o -> o.getDateCompleted() != null).sorted(Comparator.comparing(Item::getDateCompleted)).toList();
+        }else {
+            //sorted by item id
+            items = items.stream()
+                .sorted(Comparator.comparingLong(Item::getId)).toList();
+        }
+
+        return new ResponseEntity<>(items, HttpStatus.CREATED);
     }
 
     @PostMapping("/categories/{id}/items")
@@ -103,7 +114,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/categories/{id}/items")
-    public ResponseEntity<List<Item>> deleteItemsFromCategory(@PathVariable("id") Long id){
+    public ResponseEntity<List<Item>> deleteAllItemsFromCategory(@PathVariable("id") Long id){
 
         Optional<Category> optCategory = categoryRepository.findById(id);
 

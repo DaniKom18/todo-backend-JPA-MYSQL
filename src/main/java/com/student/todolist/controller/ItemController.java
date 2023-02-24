@@ -37,16 +37,6 @@ public class ItemController {
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
-    @GetMapping("/items/completed")
-    public ResponseEntity<List<Item>> getCompletedItems(){
-        // .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
-        List<Item> item = itemRepository.findAll().stream().filter(o -> o.getDateCompleted() != null).sorted(Comparator.comparing(Item::getDateCompleted)).toList();
-        if(item.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(item, HttpStatus.OK);
-    }
-
     @DeleteMapping("/items/{id}")
     public ResponseEntity<Item> deleteItem(@PathVariable("id") long id){
         Optional<Item> item = itemRepository.findById(id);
