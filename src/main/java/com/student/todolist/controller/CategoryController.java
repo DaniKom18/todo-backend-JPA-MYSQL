@@ -3,6 +3,7 @@ package com.student.todolist.controller;
 import com.student.todolist.entity.Category;
 import com.student.todolist.entity.CategoryInfo;
 import com.student.todolist.entity.Item;
+import com.student.todolist.entity.ItemFactory;
 import com.student.todolist.repository.CategoryRepository;
 import com.student.todolist.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,8 @@ public class CategoryController {
         }
 
         Category category = optCategory.get();
-        itemRepository.save(new Item(item.getDescription(), category));
+        itemRepository.save(ItemFactory.createItem(item.getDescription(), category));
+
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
@@ -100,12 +102,10 @@ public class CategoryController {
         if (item.getDescription() != null){
             updatedItem.setDescription(item.getDescription());
         }
-        if (item.getDateDue() != null){
-            updatedItem.setDateDue(item.getDateDue());
-        }
         if (item.getDateCompleted() != null){
             updatedItem.setDateCompleted(item.getDateCompleted());
         }
+        updatedItem.setDateDue(item.getDateDue());
 
         //Save updated item in database
         itemRepository.save(updatedItem);
